@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@signalapp/better-sqlite3": "^8.4.3"
+  },
+  "scripts": {
+    "test": "node export_conversations.test.js"
+  }
+}
