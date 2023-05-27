@@ -1,7 +1,7 @@
 #!/bin/bash
 
 input_folder="audio-files"
-output_folder="transcriptions"
+output_folder="transcrips"
 
 # Create output folder if it doesn't exist
 mkdir -p "$output_folder"
