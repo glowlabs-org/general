@@ -24,6 +24,12 @@ for sub_dir in "$data_folder"/*; do
     fi
 done
 
+# Check if there are any files to process
+if [ ${#file_paths[@]} -eq 0 ]; then
+    echo "No files to process. Check the directory paths and try again."
+    exit 1
+fi
+
 # Run the whisper command with the file paths
 whisper "${!file_paths[@]}" --model large-v2 --output_format tsv --output_dir "/tmp"
 
