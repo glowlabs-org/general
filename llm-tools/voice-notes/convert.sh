@@ -12,10 +12,9 @@ file_names=()
 # Iterate through files in the input folder
 for file in "$input_folder"/*; do
     if [ -f "$file" ]; then
-        filename=$(basename "$file")
-        file_names+=("$filename")
+        file_paths+=("$file")
     fi
 done
 
-# Run the command with the file names
-whisper "${file_names[@]}" --model large-v2 --output_format tsv --output_dir "$output_folder"
+# Run the command with the file paths
+whisper "${file_paths[@]}" --model large-v2 --output_format tsv --output_dir "$output_folder"
