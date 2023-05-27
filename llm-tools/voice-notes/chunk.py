@@ -2,7 +2,7 @@ import os
 import csv
 
 # Set the maximum number of words allowed in a slice
-MAX_WORDS_PER_SLICE = 120
+MAX_WORDS_PER_SLICE = 150
 
 def get_slices(transcript):
     slices = []
