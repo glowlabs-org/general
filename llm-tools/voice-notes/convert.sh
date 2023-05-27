@@ -10,7 +10,7 @@ mkdir -p "$output_folder"
 for file in "$input_folder"/*; do
     if [ -f "$file" ]; then
         # Extract metadata using exiftool
-        datetime=$(exiftool -DateTimeOriginal -s3 "$file")
+        datetime=$(exiftool -s3 -d "%Y:%m:%d %H:%M:%S" -CreateDate "$file")
         
         # Replace colons and spaces in datetime
         formatted_datetime=${datetime//:/-}
