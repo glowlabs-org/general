@@ -38,10 +38,6 @@ for file in "${!file_paths[@]}"; do
     # Extract metadata using exiftool
     datetime=$(exiftool -s3 -d "%Y:%m:%d %H:%M:%S" -CreateDate "$file")
     
-    # Replace colons and spaces in datetime
-    formatted_datetime=${datetime//:/-}
-    formatted_datetime=${formatted_datetime// /-}
-    
     # Remove the path and extension from the filename
     filename=$(basename -- "$file")
     extension="${filename##*.}"
