@@ -34,7 +34,7 @@ async def main():
             print("Signed in successfully.")
 
         # Fetch a list of chat histories, called 'dialogs'.
-        all_dialogs = await client.get_dialogs(limit=1500)
+        all_dialogs = await client.get_dialogs(limit=50)
 
         # Create the 'conversations' folder, which is where we will store each
         # of our conversations, one file per conversation.
@@ -172,6 +172,7 @@ async def main():
                 # fetched.
                 new_messages.reverse()
                 all_new_messages = new_messages + all_new_messages
+                print("Num new messages:", len(new_messages))
 
             # Add the new messages and ensure that they are sorted
             # chronologically. The order that we fetch messages from the

@@ -2,7 +2,7 @@ import os
 import csv
 
 # Set the maximum number of words allowed in a slice
-MAX_WORDS_PER_SLICE = 150
+MAX_WORDS_PER_SLICE = 120
 
 def get_slices(transcript):
     slices = []
@@ -20,7 +20,8 @@ def get_slices(transcript):
         else:
             current_slice.append(row[0] + '\t' + row[1] + '\t' + row[2])
             current_word_count += len(words_in_line)
-
+    
+    # Always add the final slice
     if current_slice:
         slices.append(current_slice)
     
@@ -31,6 +32,11 @@ def create_chunks(slices):
     for i in range(len(slices) - 1):
         chunk = "\n".join(slices[i] + slices[i + 1])
         chunks.append(chunk)
+    
+    # Always add the final chunk
+    if len(slices) > 0:
+        chunks.append("\n".join(slices[-1]))
+    
     return chunks
 
 def write_chunks(chunks, chunk_folder_path):
