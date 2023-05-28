@@ -20,11 +20,11 @@ def get_slices(transcript):
         else:
             current_slice.append(row[0] + '\t' + row[1] + '\t' + row[2])
             current_word_count += len(words_in_line)
-    
+
     # Always add the final slice
     if current_slice:
         slices.append(current_slice)
-    
+
     return slices
 
 def create_chunks(slices):
@@ -32,11 +32,11 @@ def create_chunks(slices):
     for i in range(len(slices) - 1):
         chunk = "\n".join(slices[i] + slices[i + 1])
         chunks.append(chunk)
-    
+
     # Always add the final chunk
     if len(slices) > 0:
         chunks.append("\n".join(slices[-1]))
-    
+
     return chunks
 
 def write_chunks(chunks, chunk_folder_path):
@@ -44,26 +44,40 @@ def write_chunks(chunks, chunk_folder_path):
         with open(os.path.join(chunk_folder_path, f'chunk_{i}.tsv'), 'w') as f:
             f.write(chunk)
 
-def process_transcripts(transcripts_folder_path, chunks_folder_path):
-    transcript_files = [f for f in os.listdir(transcripts_folder_path) if os.path.isfile(os.path.join(transcripts_folder_path, f))]
-    
-    for transcript_file in transcript_files:
-        transcript_path = os.path.join(transcripts_folder_path, transcript_file)
-        
-        with open(transcript_path, 'r') as f:
-            reader = csv.reader(f, delimiter='\t')
-            transcript = list(reader)
-        
-        slices = get_slices(transcript)
-        chunks = create_chunks(slices)
-        chunk_folder_name = os.path.splitext(transcript_file)[0]
-        chunk_folder_path = os.path.join(chunks_folder_path, chunk_folder_name)
-        os.makedirs(chunk_folder_path, exist_ok=True)
-        write_chunks(chunks, chunk_folder_path)
+def process_transcripts(data_folder_path):
+    for root, dirs, files in os.walk(data_folder_path):
+        for dir_name in dirs:
+            transcript_dir_path = os.path.join(root, dir_name, 'transcripts')
+            if not os.path.isdir(transcript_dir_path):
+                continue
 
-# Set paths to the transcripts and chunks folders
-transcripts_folder_path = os.path.join(os.getcwd(), 'transcripts')
-chunks_folder_path = os.path.join(os.getcwd(), 'chunks')
+            transcript_files = [
+                f for f in os.listdir(transcript_dir_path)
+                if os.path.isfile(os.path.join(transcript_dir_path, f))
+            ]
+
+            for transcript_file in transcript_files:
+                transcript_path = os.path.join(transcript_dir_path, transcript_file)
+
+                with open(transcript_path, 'r') as f:
+                    reader = csv.reader(f, delimiter='\t')
+                    transcript = list(reader)
+
+                slices = get_slices(transcript)
+                chunks = create_chunks(slices)
+
+                # Create the corresponding 'chunks' folder
+                chunks_folder_path = os.path.join(root, dir_name, 'chunks')
+                os.makedirs(chunks_folder_path, exist_ok=True)
+
+                chunk_folder_name = os.path.splitext(transcript_file)[0]
+                chunk_folder_path = os.path.join(chunks_folder_path, chunk_folder_name)
+                os.makedirs(chunk_folder_path, exist_ok=True)
+
+                write_chunks(chunks, chunk_folder_path)
+
+# Set path to the data folder
+data_folder_path = os.path.join(os.getcwd(), 'data')
 
 # Process all transcripts
-process_transcripts(transcripts_folder_path, chunks_folder_path)
+process_transcripts(data_folder_path)
