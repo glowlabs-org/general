@@ -3,13 +3,13 @@ import requests
 import json
 
 # The original settings for the LLM API call are retained
-HOST = 'localhost:7779'
+HOST = 'localhost:5000'
 URI = f'http://{HOST}/api/v1/generate'
 
 def run(prompt):
     request = {
         'prompt': prompt,
-        'max_new_tokens': 250,
+        'max_new_tokens': 800,
         'do_sample': True,
         'temperature': 1.3,
         'top_p': 0.1,
@@ -39,13 +39,16 @@ def run(prompt):
 
     if response.status_code == 200:
         result = response.json()['results'][0]['text']
+        print(result)
         return prompt + result
+    else:
+        print(response)
 
 def run_prompts():
-    authors_dir = os.listdir(".")
+    authors_dir = os.listdir("data")
 
     for author in authors_dir:
-        author_path = os.path.join(data_folder, author)
+        author_path = os.path.join("data", author)
         prompts_path = os.path.join(author_path, 'prompts')
         responses_path = os.path.join(author_path, 'prompt-responses')
 
@@ -80,5 +83,4 @@ def run_prompts():
                                     f.write(result)
 
 if __name__ == '__main__':
-    # Point this to your data folder
     run_prompts()
