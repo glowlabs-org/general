@@ -40,7 +40,12 @@ def create_chunks(slices):
     return chunks
 
 def write_chunks(chunks, chunk_folder_path):
+    num_chunks = len(chunks)
     for i, chunk in enumerate(chunks):
+        # Skip the last chunk if there are more chunks
+        if num_chunks > 1 and i == num_chunks - 1:
+            continue
+
         with open(os.path.join(chunk_folder_path, f'chunk_{i}.tsv'), 'w') as f:
             f.write(chunk)
 

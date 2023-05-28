@@ -104,7 +104,7 @@ for author in os.listdir(base_dir):
                     filled_template = fill_template(template, **filling_args)
 
                     # Save the filled template to a .txt file
-                    output_dir = os.path.join(author_dir, 'prompts', chunk)
+                    output_dir = os.path.join(author_dir, 'prompts', chunk, chunk_file.split('.')[0])
                     os.makedirs(output_dir, exist_ok=True)
 
                     output_path = os.path.join(output_dir, f"{chunk}_{template_file.split('.')[0]}_{i}.txt")
