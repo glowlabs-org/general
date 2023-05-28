@@ -31,12 +31,13 @@ if [ ${#file_paths[@]} -eq 0 ]; then
 fi
 
 # Run the whisper command with the file paths
-whisper "${!file_paths[@]}" --model large-v2 --output_format tsv --output_dir "/tmp"
+#whisper "${!file_paths[@]}" --model large-v2 --output_format tsv --output_dir "/tmp/transcripts"
 
 # After whisper processing, rename all files in the corresponding output directory based on their Create Date
 for file in "${!file_paths[@]}"; do
+    echo $file
     # Extract metadata using exiftool
-    datetime=$(exiftool -s3 -d "%Y:%m:%d %H:%M:%S" -CreateDate "$file")
+    datetime=$(exiftool -s3 -d "%Y-%m-%d %H:%M:%S" -CreateDate "$file")
     
     # Remove the path and extension from the filename
     filename=$(basename -- "$file")
@@ -44,13 +45,13 @@ for file in "${!file_paths[@]}"; do
     filename="${filename%.*}"
     
     # Create new filename
-    new_filename="${formatted_datetime}-${filename}.tsv"
+    new_filename="${datetime}-${filename}.tsv"
     
     # Define the output directory for this file
     output_folder=${file_paths["$file"]}
     
     # Rename the output file
-    if [ -f "/tmp/$filename.tsv" ]; then
-        mv "/tmp/$filename.tsv" "$output_folder/$new_filename"
+    if [ -f "/tmp/transcripts/$filename.tsv" ]; then
+        mv "/tmp/transcripts/$filename.tsv" "$output_folder/$new_filename"
     fi
 done
