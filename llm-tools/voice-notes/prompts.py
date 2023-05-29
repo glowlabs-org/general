@@ -24,19 +24,24 @@ def fill_template(template: str, **kwargs) -> str:
 
     return template
 
-def parse_options(text: str) -> dict:
+def parse_options(text: str) -> (dict, str):
     lines = text.strip().split("\n")
     options_dict = {}
     key = None
+    remaining_content = ""
+    options_section = True  # a flag to mark if we are in the options section
     for line in lines:
         if line.strip() == '':
-            break
-        if ':' in line:
-            key, _ = line.split(':')
-            options_dict[key.strip()] = []
+            options_section = False
+        if options_section:
+            if ':' in line:
+                key, _ = line.split(':')
+                options_dict[key.strip()] = []
+            else:
+                options_dict[key.strip()].append(line.strip())
         else:
-            options_dict[key.strip()].append(line.strip())
-    return options_dict
+            remaining_content += line + "\n"
+    return options_dict, remaining_content
 
 # Base directory
 base_dir = 'data'
@@ -74,7 +79,7 @@ for author in os.listdir(base_dir):
                 chunk_content = f.read()
 
             # Loop over all templates
-            templates_dir = 'prompt templates'
+            templates_dir = 'digest templates'
             for template_file in os.listdir(templates_dir):
                 template_path = os.path.join(templates_dir, template_file)
 
@@ -82,11 +87,9 @@ for author in os.listdir(base_dir):
                 template = read_txt_file(template_path)
 
                 # Extract the options for 'parties'
-                options_start = template.find('### Instruction:')
-                options_str = template[:options_start].strip()
-                options_dict = parse_options(options_str)
+                options_dict, remaining_content = parse_options(template)
                 
-                template = template[options_start:]  # Remove the options from the template
+                template = remaining_content  # Replace the template with the remaining_content
 
                 # Create a list of lists for each category in the options dictionary
                 options = [value for key, value in options_dict.items()]
@@ -98,9 +101,11 @@ for author in os.listdir(base_dir):
                 for i, option_perm in enumerate(all_permutations):
                     # Fill the template with the respective values from the permutation
                     filling_args = {'context': context, 'date': date, 'author': author, 'chunk': chunk_content}
-                    # As option_perm is a tuple, we should convert it to a dict using the keys from options_dict
-                    filling_args.update(dict(zip(options_dict.keys(), option_perm)))
 
+                    # Update the filling_args dictionary with the option_perm converted to a list first
+                    filling_args.update({key: value for key, value in zip(options_dict.keys(), list(option_perm))})
+
+                    # Fill the template
                     filled_template = fill_template(template, **filling_args)
 
                     # Save the filled template to a .txt file
@@ -110,3 +115,4 @@ for author in os.listdir(base_dir):
                     output_path = os.path.join(output_dir, f"{chunk}_{template_file.split('.')[0]}_{i}.txt")
                     with open(output_path, 'w') as output_file:
                         output_file.write(filled_template)
+print('All prompts have been successfully created.')

@@ -1,0 +1,26 @@
+parties:
+  a Glow employee and their manager
+  a Glow community moderator and an annoying internet troll
+  a small child and an experienced teacher
+  a harsh critic and an even tempered Glow executive
+  two excited Glow community members
+  an excited Glow employee and a Glow community member
+  two Glow employees
+  a critic and a Glow executive who has good answers to all criticisms
+  a regulator and a Glow executive
+
+[context]
+
+This is a transcript of a voice note recorded on [date] by [author]:
+
+```
+[chunk]
+```
+
+### Instruction:
+
+Please present the content of this voice note as a conversation between
+[parties]. Make sure they discuss the content of the voice note. Your response
+should contain only the conversation.
+
+### Response:

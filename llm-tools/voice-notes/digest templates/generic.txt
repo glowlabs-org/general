@@ -1,0 +1,22 @@
+prompt:
+  Create a set of questions that a normal person might have about the voice note, and then answer those questions from the perspective of an expert.
+  Create a set of questions that an expert might have about the voice note.
+  List out some ways that this new knowledge could be applied to Glow.
+  List out reasons that this voice note should be seen as reassuring to critics.
+  List out reasons that this voice note should be seen as reassuring to regulators.
+  List out reasons that this voice note should be exciting to community members.
+  List out reasons that this voice note should be exciting to Glow employees.
+
+[context]
+
+This is a transcript of a voice note recorded on [date] by [author].
+
+```
+[chunk]
+```
+
+### Instruction:
+
+[prompt]
+
+### Response:

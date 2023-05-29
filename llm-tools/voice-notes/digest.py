@@ -12,12 +12,12 @@ def run(prompt):
         'max_new_tokens': 800,
         'do_sample': True,
         'temperature': 1.3,
-        'top_p': 0.1,
+        'top_p': 0.4,
         'typical_p': 1,
         'epsilon_cutoff': 0,  # In units of 1e-4
         'eta_cutoff': 0,  # In units of 1e-4
         'repetition_penalty': 1.18,
-        'top_k': 40,
+        'top_k': 50,
         'min_length': 0,
         'no_repeat_ngram_size': 0,
         'num_beams': 1,
@@ -49,8 +49,8 @@ def run_prompts():
 
     for author in authors_dir:
         author_path = os.path.join("data", author)
-        prompts_path = os.path.join(author_path, 'prompts')
-        responses_path = os.path.join(author_path, 'prompt-responses')
+        prompts_path = os.path.join(author_path, 'digest prompts')
+        responses_path = os.path.join(author_path, 'digest responses')
 
         if os.path.isdir(prompts_path):
             transcript_dirs = os.listdir(prompts_path)

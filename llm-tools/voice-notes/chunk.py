@@ -2,23 +2,21 @@ import os
 import csv
 
 # Set the maximum number of words allowed in a slice
-MAX_WORDS_PER_SLICE = 150
+MAX_WORDS_PER_SLICE = 240
 
 def get_slices(transcript):
     slices = []
     current_slice = []
     current_word_count = 0
-    current_slice_start_time = transcript[1][0]
-    current_slice_end_time = transcript[1][1]
 
     for row in transcript[1:]:  # Skip the header
         words_in_line = row[2].split()
         if current_word_count + len(words_in_line) > MAX_WORDS_PER_SLICE:
             slices.append(current_slice)
-            current_slice = [row[0] + '\t' + row[1] + '\t' + row[2]]
+            current_slice = [row[2]]  # Keep the words only
             current_word_count = len(words_in_line)
         else:
-            current_slice.append(row[0] + '\t' + row[1] + '\t' + row[2])
+            current_slice.append(row[2])  # Keep the words only
             current_word_count += len(words_in_line)
 
     # Always add the final slice

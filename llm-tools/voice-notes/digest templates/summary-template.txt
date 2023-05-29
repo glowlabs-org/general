@@ -1,27 +1,25 @@
 style:
   a concise
-  a thorough
-  an informal
-  a professional
+  a lengthy
 format:
   a bullet point
   a paragraph
 audience:
-  a middle school
   an internet community
-  an office worker
-
-### Instruction:
+  a research conference
 
 [context]
 
-This is a voice note recorded on [date] by [author].
+This is a transcript of a voice note recorded on [date] by [author].
 
+```
 [chunk]
+```
+
+### Instruction:
 
 Please write [style] summary of the transcript using [format] format.
 Please target [audience] audience. Your response should contain only the
 summary.
 
 ### Response:
-
