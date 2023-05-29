@@ -1,13 +1,10 @@
 parties:
   a Glow employee and their manager
-  a Glow community moderator and an annoying internet troll
-  a small child and an experienced teacher
-  a harsh critic and an even tempered Glow executive
-  two excited Glow community members
-  an excited Glow employee and a Glow community member
   two Glow employees
-  a critic and a Glow executive who has good answers to all criticisms
-  a regulator and a Glow executive
+  a patient Glow community moderator and an annoying internet troll
+  a small child and an experienced teacher
+  two excited Glow community members
+  a critic and an even tempered Glow executive who has good answers to all criticisms
 
 [context]
 

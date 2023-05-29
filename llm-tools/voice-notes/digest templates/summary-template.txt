@@ -1,12 +1,10 @@
 style:
   a concise
-  a lengthy
 format:
   a bullet point
   a paragraph
 audience:
   an internet community
-  a research conference
 
 [context]
 
