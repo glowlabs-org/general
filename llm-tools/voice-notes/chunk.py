@@ -8,9 +8,17 @@ def get_slices(transcript):
     slices = []
     current_slice = []
     current_word_count = 0
+    last_line = None
 
     for row in transcript[1:]:  # Skip the header
         words_in_line = row[2].split()
+
+        # Skip the row if it is the same as the last one
+        if words_in_line == last_line:
+            continue
+
+        last_line = words_in_line
+
         if current_word_count + len(words_in_line) > MAX_WORDS_PER_SLICE:
             slices.append(current_slice)
             current_slice = [row[2]]  # Keep the words only
