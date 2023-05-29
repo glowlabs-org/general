@@ -1,0 +1,21 @@
+Format: Glow Labs LLM Training Data
+Source Data Type: Voice Notes
+Pipeline Version: 1
+Agent: Guanaco-65B-GPTQ
+---
+
+[original prompt, excluding the instruction]
+
+### Instruction:
+
+Provide a set of digests for this data.
+
+### Response:
+
+[digest 1]
+---
+[digest 2]
+---
+[digest 3]
+---
+[etc]

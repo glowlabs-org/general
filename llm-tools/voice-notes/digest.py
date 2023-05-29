@@ -12,7 +12,7 @@ def run(prompt):
         'max_new_tokens': 800,
         'do_sample': True,
         'temperature': 1.3,
-        'top_p': 0.4,
+        'top_p': 0.5,
         'typical_p': 1,
         'epsilon_cutoff': 0,  # In units of 1e-4
         'eta_cutoff': 0,  # In units of 1e-4
@@ -39,8 +39,8 @@ def run(prompt):
 
     if response.status_code == 200:
         result = response.json()['results'][0]['text']
-        print(result)
-        return prompt + result
+        print(prompt + result)
+        return result
     else:
         print(response)
 
@@ -72,13 +72,17 @@ def run_prompts():
 
                             for prompt_file in prompt_files:
                                 prompt_file_path = os.path.join(chunk_path, prompt_file)
-                                
+                                response_file_path = os.path.join(chunk_responses_path, prompt_file)
+
+                                # Check if the response file already exists, if yes skip this iteration
+                                if os.path.exists(response_file_path):
+                                    continue
+
                                 with open(prompt_file_path, 'r') as f:
                                     prompt = f.read()
 
                                 result = run(prompt)
 
-                                response_file_path = os.path.join(chunk_responses_path, prompt_file)
                                 with open(response_file_path, 'w') as f:
                                     f.write(result)
 
