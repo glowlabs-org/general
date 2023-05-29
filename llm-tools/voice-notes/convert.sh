@@ -45,7 +45,7 @@ if [ ${#file_paths[@]} -eq 0 ]; then
 fi
 
 # Run the whisper command with the file paths
-whisper "${!file_paths[@]}" --model large-v2 --output_format tsv --output_dir "/tmp/transcripts" --language english
+whisper "${!file_paths[@]}" --model large-v2 --output_format tsv --output_dir "/tmp/transcripts" --language en
 
 # After whisper processing, rename all files in the corresponding output directory based on their Create Date
 for file in "${!file_paths[@]}"; do
