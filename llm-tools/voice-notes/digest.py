@@ -5,7 +5,7 @@ import json
 
 # The original settings for the LLM API call are retained
 HOST1 = 'localhost:5000'
-HOST2 = 'localhost:5005'  # second host
+HOST2 = 'localhost:5005'
 URI1 = f'http://{HOST1}/api/v1/generate'
 URI2 = f'http://{HOST2}/api/v1/generate'
 
@@ -85,27 +85,24 @@ async def run_prompts():
                                     prompt_file_path = os.path.join(chunk_path, prompt_file)
                                     response_file_path = os.path.join(chunk_responses_path, prompt_file)
 
-                                    # Check if the response file already exists, if yes skip this iteration
                                     if os.path.exists(response_file_path):
                                         continue
 
                                     with open(prompt_file_path, 'r') as f:
                                         prompt = f.read()
 
-                                    # The URI is alternated for each task
                                     uri = URI1 if len(tasks) % 2 == 0 else URI2
                                     task = asyncio.ensure_future(run(session, uri, prompt))
                                     tasks.append(task)
 
-                                    # Gather results when they are ready
                                     if len(tasks) >= 2:
-                                        done, tasks = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+                                        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+                                        tasks = list(pending)
                                         for task in done:
                                             result = task.result()
                                             with open(response_file_path, 'w') as f:
                                                 f.write(result)
 
-        # If tasks are remaining, wait for them and gather results
         if tasks:
             done, _ = await asyncio.wait(tasks)
             for task in done:
