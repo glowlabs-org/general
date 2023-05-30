@@ -50,7 +50,9 @@ async def run(session, uri, prompt):
                 return "Invalid response"
         else:
             print("Error status: ", response.status)
-            return "Error status: " + str(response.status)
+            error_body = await response.text()
+            print("Error body: ", error_body)
+            return f"Error status: {response.status}, error body: {error_body}"
 
 async def run_prompts():
     authors_dir = os.listdir("data")
