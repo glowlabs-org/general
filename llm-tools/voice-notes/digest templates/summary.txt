@@ -1,0 +1,21 @@
+style:
+  a concise
+format:
+  a bullet point
+  a paragraph
+audience:
+  an internet community
+
+[context]
+
+This is a transcript of a voice note recorded on [date] by [author].
+
+[chunk]
+
+### Instruction:
+
+Please write [style] summary of the transcript using [format] format.
+Please target [audience] audience. Your response should contain only the
+summary.
+
+### Response:

@@ -1,0 +1,15 @@
+prompt:
+  Create a set of questions that a normal person might have about the voice note
+  Create a set of questions that an expert might have about the voice note
+
+[context]
+
+This is a transcript of a voice note recorded on [date] by [author].
+
+[chunk]
+
+### Instruction:
+
+[prompt]. Ensure that the content of the voice note is the main focus. Your response should contain only the questions.
+
+### Response:
