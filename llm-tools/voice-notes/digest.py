@@ -9,7 +9,7 @@ HOST2 = 'localhost:5005'
 URI1 = f'http://{HOST1}/api/v1/generate'
 URI2 = f'http://{HOST2}/api/v1/generate'
 
-async def run(session, uri, prompt):
+async def run(session, uri, prompt, response_file_path):
     request = {
         'prompt': prompt,
         'max_new_tokens': 800,
@@ -44,15 +44,14 @@ async def run(session, uri, prompt):
             try:
                 result = data['results'][0]['text']
                 print(prompt + result)
-                return prompt + result
+                with open(response_file_path, 'w') as f:
+                    f.write(result)
             except (TypeError, KeyError):
                 print("Invalid response: ", data)
-                return "Invalid response"
         else:
             print("Error status: ", response.status)
             error_body = await response.text()
             print("Error body: ", error_body)
-            return f"Error status: {response.status}, error body: {error_body}"
 
 async def run_prompts():
     authors_dir = os.listdir("data")
@@ -94,23 +93,15 @@ async def run_prompts():
                                         prompt = f.read()
 
                                     uri = URI1 if len(tasks) % 2 == 0 else URI2
-                                    task = asyncio.ensure_future(run(session, uri, prompt))
+                                    task = asyncio.ensure_future(run(session, uri, prompt, response_file_path))
                                     tasks.append(task)
 
                                     if len(tasks) >= 2:
                                         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
                                         tasks = list(pending)
-                                        for task in done:
-                                            result = task.result()
-                                            with open(response_file_path, 'w') as f:
-                                                f.write(result)
 
         if tasks:
-            done, _ = await asyncio.wait(tasks)
-            for task in done:
-                result = task.result()
-                with open(response_file_path, 'w') as f:
-                    f.write(result)
+            await asyncio.wait(tasks)
 
 if __name__ == '__main__':
     asyncio.run(run_prompts())
