@@ -5,7 +5,7 @@ import json
 
 # The original settings for the LLM API call are retained
 HOST1 = 'localhost:5000'
-HOST2 = 'localhost:5001'  # second host
+HOST2 = 'localhost:5005'  # second host
 URI1 = f'http://{HOST1}/api/v1/generate'
 URI2 = f'http://{HOST2}/api/v1/generate'
 
@@ -41,11 +41,16 @@ async def run(session, uri, prompt):
     async with session.post(uri, json=request) as response:
         if response.status == 200:
             data = await response.json()
-            result = data['results'][0]['text']
-            print(prompt + result)
-            return prompt + result
+            try:
+                result = data['results'][0]['text']
+                print(prompt + result)
+                return prompt + result
+            except (TypeError, KeyError):
+                print("Invalid response: ", data)
+                return "Invalid response"
         else:
-            print(response.status)
+            print("Error status: ", response.status)
+            return "Error status: " + str(response.status)
 
 async def run_prompts():
     authors_dir = os.listdir("data")
@@ -60,7 +65,7 @@ async def run_prompts():
 
             if os.path.isdir(prompts_path):
                 transcript_dirs = os.listdir(prompts_path)
-
+                
                 for transcript in transcript_dirs:
                     transcript_path = os.path.join(prompts_path, transcript)
                     transcript_responses_path = os.path.join(responses_path, transcript)
