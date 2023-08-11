@@ -163,6 +163,9 @@ async def main():
                     if message.date.timestamp() < earliest_new_timestamp:
                         earliest_new_timestamp = message.date.timestamp()
                     if not latest_saved_timestamp or message.date.timestamp() > latest_saved_timestamp:
+                        if not sender and not message.text:
+                            print("blank message from unknown sender... skipping!")
+                            continue
                         new_messages.append(f'[{int(message.date.timestamp())}] {sender_name}: {message.text}')
                     else:
                         possible_gap = False
@@ -173,6 +176,11 @@ async def main():
                 new_messages.reverse()
                 all_new_messages = new_messages + all_new_messages
                 print("Num new messages:", len(new_messages))
+
+                # If no messages were fetched at all, we won't be getting any
+                # more messages so we need to exit the loop.
+                if len(new_messages) == 0:
+                    possible_gap = False
 
             # Add the new messages and ensure that they are sorted
             # chronologically. The order that we fetch messages from the
