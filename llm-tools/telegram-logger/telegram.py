@@ -2,6 +2,7 @@ import asyncio
 import re
 import os
 import json
+from datetime import datetime
 from time import time
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
@@ -34,7 +35,7 @@ async def main():
             print("Signed in successfully.")
 
         # Fetch a list of chat histories, called 'dialogs'.
-        all_dialogs = await client.get_dialogs(limit=150)
+        all_dialogs = await client.get_dialogs(limit=1850)
 
         # Create the 'conversations' folder, which is where we will store each
         # of our conversations, one file per conversation.
@@ -56,6 +57,8 @@ async def main():
             else:
                 print("Unknown dialog name")
                 name = 'Unknown'
+            if name is None:
+                continue
             print("Fetching data for: ", name)
 
             # Determine the filename for the conversation, and loading any
@@ -77,8 +80,8 @@ async def main():
             # messages are missing between these timestamps, and therefore in
             # the future we need to check whether these messages have any gaps.
             if conversation:
-                earliest_saved_timestamp = int(conversation[0].split(']')[0][1:])
-                latest_saved_timestamp = int(conversation[-1].split(']')[0][1:])
+                earliest_saved_timestamp = int(conversation[0].split(' - ')[0][1:])
+                latest_saved_timestamp = int(conversation[-1].split(' - ')[0][1:])
 
             # We are going to start by fetching older messages than the
             # messages that we already have. We don't mind using a high limit
@@ -141,12 +144,17 @@ async def main():
                 # performance penalty.
                 print("Fetching new messages...")
                 new_messages = []
-                async for message in client.iter_messages(dialog.entity, offset_date=earliest_new_timestamp, limit=100):
+                async for message in client.iter_messages(dialog.entity, offset_date=earliest_new_timestamp-1, limit=200):
                     # Determine the name of the entity that sent the message.
                     sender = await message.get_sender()
+                    sender_handle = "Unknown"
                     if sender:
                         if isinstance(sender, User):
-                            sender_name = sender.first_name
+                            if sender.last_name:
+                                sender_name = f'{sender.first_name} {sender.last_name}'
+                            else:
+                                sender_name = sender.first_name
+                            sender_handle = sender.username if sender.username else "Unknown"
                         elif isinstance(sender, Channel):
                             sender_name = sender.title
                         elif isinstance(sender, Chat):
@@ -157,6 +165,9 @@ async def main():
                     else:
                         print("Unknown result of get_sender()")
                         sender_name = 'Unknown'
+                        
+                    # Get a human readable date for the message
+                    message_date = datetime.utcfromtimestamp(message.date.timestamp()).strftime('%Y-%m-%d %H:%M:%S')
 
                     # Add the message to the conversation, but only if the
                     # timestamp is after the latest message in the conversation.
@@ -166,7 +177,7 @@ async def main():
                         if not sender and not message.text:
                             print("blank message from unknown sender... skipping!")
                             continue
-                        new_messages.append(f'[{int(message.date.timestamp())}] {sender_name}: {message.text}')
+                        new_messages.append(f'[{int(message.date.timestamp())} - {message_date}] {sender_name} <{sender_handle}>: {message.text}')
                     else:
                         possible_gap = False
 
@@ -176,6 +187,7 @@ async def main():
                 new_messages.reverse()
                 all_new_messages = new_messages + all_new_messages
                 print("Num new messages:", len(new_messages))
+                print(new_messages)
 
                 # If no messages were fetched at all, we won't be getting any
                 # more messages so we need to exit the loop.
