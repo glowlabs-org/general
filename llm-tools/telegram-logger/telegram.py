@@ -35,7 +35,7 @@ async def main():
             print("Signed in successfully.")
 
         # Fetch a list of chat histories, called 'dialogs'.
-        all_dialogs = await client.get_dialogs(limit=1850)
+        all_dialogs = await client.get_dialogs(limit=2850)
 
         # Create the 'conversations' folder, which is where we will store each
         # of our conversations, one file per conversation.
@@ -97,19 +97,27 @@ async def main():
                     batch_of_messages = []
                     async for message in client.iter_messages(dialog.entity, offset_date=earliest_saved_timestamp-1, limit=2000, max_id=max_id):
                         sender = await message.get_sender()
+                        sender_handle = "Unknown"
                         if sender:
                             if isinstance(sender, User):
-                                sender_name = sender.first_name
+                                if sender.last_name:
+                                    sender_name = f'{sender.first_name} {sender.last_name}'
+                                else:
+                                    sender_name = sender.first_name
+                                sender_handle = sender.username if sender.username else "Unknown"
                             elif isinstance(sender, Channel):
+                                sender_name = sender.title
+                            elif isinstance(sender, Chat):
                                 sender_name = sender.title
                             else:
                                 print("Unknown sender")
                                 sender_name = 'Unknown'
                         else:
-                            print("Unknown get_sender result")
+                            print("Unknown result of get_sender()")
                             sender_name = 'Unknown'
 
-                        batch_of_messages.append(f'[{int(message.date.timestamp())}] {sender_name}: {message.text}')
+                        message_date = datetime.utcfromtimestamp(message.date.timestamp()).strftime('%Y-%m-%d %H:%M:%S')
+                        batch_of_messages.append(f'[{int(message.date.timestamp())} - {message_date}] {sender_name} <{sender_handle}>: {message.text}')
                         max_id = message.id
 
                     if batch_of_messages:
