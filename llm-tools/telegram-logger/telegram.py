@@ -35,7 +35,7 @@ async def main():
             print("Signed in successfully.")
 
         # Fetch a list of chat histories, called 'dialogs'.
-        all_dialogs = await client.get_dialogs(limit=2850)
+        all_dialogs = await client.get_dialogs(limit=500)
 
         # Create the 'conversations' folder, which is where we will store each
         # of our conversations, one file per conversation.
